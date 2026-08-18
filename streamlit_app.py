@@ -1,6 +1,441 @@
 import streamlit as st
 
-st.title("🎈 My new app")
+
+st.set_page_config(
+    page_title="이차함수 y=ax²+q 탐구",
+    page_icon="📈",
+    layout="wide"
+)
+
+st.title("📈 이차함수 y = ax² + q의 그래프 탐구")
+
 st.write(
-    "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
+    "q의 값을 바꾸면서 y = ax²의 그래프와 비교해 보고, "
+    "그래프가 어떻게 달라지는지 관찰해 보세요."
+)
+
+st.info(
+    "이 웹 앱에서는 그래프의 변화를 눈으로 관찰합니다. "
+    "발견한 내용과 그 이유는 활동지와 모둠 토의에서 정리하세요."
+)
+
+
+# --------------------------------------------------
+# 함수 이름
+# --------------------------------------------------
+
+def function_name(a, q):
+    if a == 1:
+        base = "x²"
+    elif a == -1:
+        base = "-x²"
+    else:
+        base = f"{a}x²"
+
+    if q == 0:
+        return f"y = {base}"
+    elif q > 0:
+        return f"y = {base} + {q}"
+    else:
+        return f"y = {base} - {abs(q)}"
+
+
+# --------------------------------------------------
+# 그래프 자료 만들기
+# --------------------------------------------------
+
+def make_graph_rows(functions, x_min, x_max):
+    rows = []
+
+    start = int(x_min * 20)
+    end = int(x_max * 20)
+
+    for i in range(start, end + 1):
+        x = i / 20
+
+        for a, q in functions:
+            rows.append(
+                {
+                    "x": x,
+                    "y": a * x**2 + q,
+                    "함수": function_name(a, q)
+                }
+            )
+
+    return rows
+
+
+# --------------------------------------------------
+# 좌표축이 드러나는 그래프
+# --------------------------------------------------
+
+def draw_graph(
+    functions,
+    x_domain,
+    y_domain,
+    graph_key,
+    height=560,
+    show_vertex=False
+):
+    rows = make_graph_rows(
+        functions=functions,
+        x_min=x_domain[0],
+        x_max=x_domain[1]
+    )
+
+    layers = [
+        # 함수 그래프
+        {
+            "data": {
+                "values": rows
+            },
+            "mark": {
+                "type": "line",
+                "strokeWidth": 3,
+                "clip": True
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative",
+                    "scale": {
+                        "domain": x_domain,
+                        "nice": False
+                    },
+                    "axis": {
+                        "title": "x",
+                        "grid": True,
+                        "tickCount": 9
+                    }
+                },
+                "y": {
+                    "field": "y",
+                    "type": "quantitative",
+                    "scale": {
+                        "domain": y_domain,
+                        "nice": False
+                    },
+                    "axis": {
+                        "title": "y",
+                        "grid": True
+                    }
+                },
+                "color": {
+                    "field": "함수",
+                    "type": "nominal",
+                    "legend": {
+                        "title": "함수"
+                    }
+                },
+                "tooltip": [
+                    {
+                        "field": "함수",
+                        "type": "nominal",
+                        "title": "함수"
+                    },
+                    {
+                        "field": "x",
+                        "type": "quantitative",
+                        "title": "x",
+                        "format": ".2f"
+                    },
+                    {
+                        "field": "y",
+                        "type": "quantitative",
+                        "title": "y",
+                        "format": ".2f"
+                    }
+                ]
+            }
+        },
+
+        # x축
+        {
+            "data": {
+                "values": [{"y": 0}]
+            },
+            "mark": {
+                "type": "rule",
+                "color": "black",
+                "strokeWidth": 2
+            },
+            "encoding": {
+                "y": {
+                    "field": "y",
+                    "type": "quantitative"
+                }
+            }
+        },
+
+        # y축
+        {
+            "data": {
+                "values": [{"x": 0}]
+            },
+            "mark": {
+                "type": "rule",
+                "color": "black",
+                "strokeWidth": 2
+            },
+            "encoding": {
+                "x": {
+                    "field": "x",
+                    "type": "quantitative"
+                }
+            }
+        }
+    ]
+
+    # 꼭짓점 표시
+    if show_vertex:
+        vertex_rows = []
+
+        for a, q in functions:
+            vertex_rows.append(
+                {
+                    "x": 0,
+                    "y": q,
+                    "함수": function_name(a, q),
+                    "좌표": f"(0, {q})"
+                }
+            )
+
+        layers.append(
+            {
+                "data": {
+                    "values": vertex_rows
+                },
+                "mark": {
+                    "type": "point",
+                    "filled": True,
+                    "size": 120,
+                    "color": "black"
+                },
+                "encoding": {
+                    "x": {
+                        "field": "x",
+                        "type": "quantitative"
+                    },
+                    "y": {
+                        "field": "y",
+                        "type": "quantitative"
+                    },
+                    "tooltip": [
+                        {
+                            "field": "함수",
+                            "type": "nominal",
+                            "title": "함수"
+                        },
+                        {
+                            "field": "좌표",
+                            "type": "nominal",
+                            "title": "점의 좌표"
+                        }
+                    ]
+                }
+            }
+        )
+
+    chart = {
+        "height": height,
+        "layer": layers,
+        "config": {
+            "view": {
+                "stroke": "gray"
+            },
+            "axis": {
+                "labelFontSize": 13,
+                "titleFontSize": 16
+            },
+            "legend": {
+                "labelFontSize": 13,
+                "titleFontSize": 14
+            }
+        }
+    }
+
+    value_key = "_".join(
+        f"{a}_{q}"
+        for a, q in functions
+    )
+
+    st.vega_lite_chart(
+        chart,
+        use_container_width=True,
+        key=f"{graph_key}_{value_key}"
+    )
+
+
+# ==================================================
+# 탐구 1
+# ==================================================
+
+st.divider()
+st.header("탐구 1. y = x²와 y = x² + q 비교")
+
+st.write(
+    "y = x²의 그래프를 기준으로, "
+    "q의 값을 바꾸면서 두 그래프를 비교해 보세요."
+)
+
+q1 = st.slider(
+    "q의 값",
+    min_value=-5,
+    max_value=5,
+    value=2,
+    step=1,
+    key="q1"
+)
+
+if q1 == 0:
+    compare_values_1 = [(1, 0)]
+else:
+    compare_values_1 = [(1, 0), (1, q1)]
+
+draw_graph(
+    functions=compare_values_1,
+    x_domain=[-4, 4],
+    y_domain=[-7, 16],
+    graph_key="explore1",
+    height=600
+)
+
+st.info(
+    "💭 두 그래프를 비교하여 발견한 내용을 자유롭게 찾아보세요."
+)
+
+
+# ==================================================
+# 탐구 2
+# ==================================================
+
+st.divider()
+st.header("탐구 2. 여러 q에 따른 그래프 비교")
+
+st.write(
+    "q의 값이 서로 다른 여러 그래프를 "
+    "한 좌표평면에서 비교해 보세요."
+)
+
+draw_graph(
+    functions=[
+        (1, -4),
+        (1, -2),
+        (1, 0),
+        (1, 2),
+        (1, 4)
+    ],
+    x_domain=[-4, 4],
+    y_domain=[-7, 16],
+    graph_key="explore2",
+    height=600
+)
+
+st.info(
+    "💭 여러 그래프를 비교하여 공통점과 차이점을 찾아보세요."
+)
+
+
+# ==================================================
+# 탐구 3
+# ==================================================
+
+st.divider()
+st.header("탐구 3. y = ax²와 y = ax² + q 비교")
+
+st.write(
+    "a와 q의 값을 바꾸면서 "
+    "두 그래프 사이의 관계를 관찰해 보세요."
+)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    a3 = st.slider(
+        "a의 값",
+        min_value=-4,
+        max_value=4,
+        value=2,
+        step=1,
+        key="a3"
+    )
+
+with col2:
+    q3 = st.slider(
+        "q의 값",
+        min_value=-5,
+        max_value=5,
+        value=3,
+        step=1,
+        key="q3"
+    )
+
+if a3 == 0:
+    st.warning(
+        "a가 0이면 이차함수가 아닙니다. "
+        "0이 아닌 값을 선택하세요."
+    )
+
+else:
+    if q3 == 0:
+        compare_values_3 = [(a3, 0)]
+    else:
+        compare_values_3 = [
+            (a3, 0),
+            (a3, q3)
+        ]
+
+    draw_graph(
+        functions=compare_values_3,
+        x_domain=[-4, 4],
+        y_domain=[-22, 22],
+        graph_key="explore3",
+        height=590
+    )
+
+    st.info(
+        "💭 a의 값이 달라져도 q가 그래프에 미치는 영향은 같은지 관찰해 보세요."
+    )
+
+
+# ==================================================
+# 탐구 4
+# ==================================================
+
+st.divider()
+st.header("탐구 4. q와 그래프의 특별한 점")
+
+st.write(
+    "q의 값을 바꾸면서 그래프에서 가장 특징적인 점이 "
+    "어떻게 움직이는지 관찰해 보세요."
+)
+
+q4 = st.slider(
+    "q의 값",
+    min_value=-6,
+    max_value=6,
+    value=2,
+    step=1,
+    key="q4"
+)
+
+draw_graph(
+    functions=[(1, q4)],
+    x_domain=[-5, 5],
+    y_domain=[-8, 18],
+    graph_key="explore4",
+    height=590,
+    show_vertex=True
+)
+
+st.info(
+    "💭 검은 점의 위치와 q의 값 사이에서 어떤 관계를 발견할 수 있나요?"
+)
+
+
+st.divider()
+
+st.caption(
+    "※ 앱에서는 그래프의 변화를 먼저 발견하고, "
+    "활동지에서는 표와 좌표를 이용하여 그 이유를 설명해 보세요."
 )
