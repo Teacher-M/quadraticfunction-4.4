@@ -47,6 +47,7 @@ def function_name(a, q):
 def make_graph_rows(functions, x_min, x_max):
     rows = []
 
+    # 0.05 간격으로 값을 만들어 부드러운 곡선 표시
     start = int(x_min * 20)
     end = int(x_max * 20)
 
@@ -66,7 +67,7 @@ def make_graph_rows(functions, x_min, x_max):
 
 
 # --------------------------------------------------
-# 그래프 그리기
+# 좌표축이 드러나는 그래프
 # --------------------------------------------------
 
 def draw_graph(
@@ -103,6 +104,7 @@ def draw_graph(
 
                 "encoding": {
 
+                    # x축
                     "x": {
                         "field": "x",
                         "type": "quantitative",
@@ -115,10 +117,11 @@ def draw_graph(
                         "axis": {
                             "title": "x",
                             "grid": True,
-                            "tickCount": 9
+                            "tickCount": 17
                         }
                     },
 
+                    # y축
                     "y": {
                         "field": "y",
                         "type": "quantitative",
@@ -131,10 +134,11 @@ def draw_graph(
                         "axis": {
                             "title": "y",
                             "grid": True,
-                            "tickCount": 9
+                            "tickCount": 21
                         }
                     },
 
+                    # 함수별 색
                     "color": {
                         "field": "함수",
                         "type": "nominal",
@@ -144,6 +148,7 @@ def draw_graph(
                         }
                     },
 
+                    # 마우스를 올렸을 때 좌표 표시
                     "tooltip": [
 
                         {
@@ -169,7 +174,11 @@ def draw_graph(
                 }
             },
 
-            # x축
+
+            # --------------------------------------------------
+            # x축 강조
+            # --------------------------------------------------
+
             {
                 "data": {
                     "values": [{"y": 0}]
@@ -189,7 +198,11 @@ def draw_graph(
                 }
             },
 
-            # y축
+
+            # --------------------------------------------------
+            # y축 강조
+            # --------------------------------------------------
+
             {
                 "data": {
                     "values": [{"x": 0}]
@@ -210,6 +223,11 @@ def draw_graph(
             }
         ],
 
+
+        # --------------------------------------------------
+        # 그래프 전체 설정
+        # --------------------------------------------------
+
         "config": {
 
             "view": {
@@ -217,7 +235,7 @@ def draw_graph(
             },
 
             "axis": {
-                "labelFontSize": 12,
+                "labelFontSize": 11,
                 "titleFontSize": 15
             },
 
@@ -228,12 +246,14 @@ def draw_graph(
         }
     }
 
+
     value_key = "_".join(
         f"{a}_{q}"
         for a, q in functions
     )
 
-    # 화면 가로 전체를 사용하지 않도록 설정
+
+    # 그래프가 웹페이지 전체 너비로 늘어나지 않도록 설정
     st.vega_lite_chart(
         chart,
         use_container_width=False,
@@ -254,6 +274,7 @@ st.write(
     "q의 값을 바꾸면서 두 그래프를 비교해 보세요."
 )
 
+
 q1 = st.slider(
     "q의 값",
     min_value=-5,
@@ -263,14 +284,20 @@ q1 = st.slider(
     key="q1"
 )
 
+
 if q1 == 0:
-    compare_values_1 = [(1, 0)]
+
+    compare_values_1 = [
+        (1, 0)
+    ]
 
 else:
+
     compare_values_1 = [
         (1, 0),
         (1, q1)
     ]
+
 
 draw_graph(
     functions=compare_values_1,
@@ -278,6 +305,7 @@ draw_graph(
     y_domain=[-15, 65],
     graph_key="explore1"
 )
+
 
 st.info(
     "💭 두 그래프를 비교하여 발견한 내용을 찾아보세요."
@@ -297,6 +325,7 @@ st.write(
     "한 좌표평면에서 비교해 보세요."
 )
 
+
 draw_graph(
     functions=[
         (1, -4),
@@ -309,6 +338,7 @@ draw_graph(
     y_domain=[-15, 65],
     graph_key="explore2"
 )
+
 
 st.info(
     "💭 여러 그래프를 비교하여 발견한 내용을 찾아보세요."
@@ -328,7 +358,9 @@ st.write(
     "두 그래프 사이의 관계를 관찰해 보세요."
 )
 
+
 col1, col2 = st.columns(2)
+
 
 with col1:
 
@@ -340,6 +372,7 @@ with col1:
         step=1,
         key="a3"
     )
+
 
 with col2:
 
@@ -359,6 +392,7 @@ if a3 == 0:
         "a가 0이면 이차함수가 아닙니다. "
         "0이 아닌 값을 선택하세요."
     )
+
 
 else:
 
@@ -400,6 +434,7 @@ else:
         graph_key="explore3"
     )
 
+
     st.info(
         "💭 a의 값이 달라져도 두 그래프 사이에서 "
         "비슷한 관계를 발견할 수 있는지 관찰해 보세요."
@@ -419,6 +454,7 @@ st.write(
     "그래프가 어떻게 움직이는지 관찰해 보세요."
 )
 
+
 q4 = st.slider(
     "q의 값",
     min_value=-6,
@@ -427,6 +463,7 @@ q4 = st.slider(
     step=1,
     key="q4"
 )
+
 
 draw_graph(
     functions=[
@@ -437,10 +474,15 @@ draw_graph(
     graph_key="explore4"
 )
 
+
 st.info(
     "💭 그래프의 위치와 특징적인 점의 변화도 함께 관찰해 보세요."
 )
 
+
+# ==================================================
+# 마무리
+# ==================================================
 
 st.divider()
 
