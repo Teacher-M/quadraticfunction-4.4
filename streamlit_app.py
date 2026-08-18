@@ -47,6 +47,7 @@ def function_name(a, q):
 def make_graph_rows(functions, x_min, x_max):
     rows = []
 
+    # 0.05 간격으로 값을 만들어 부드러운 곡선 표시
     start = int(x_min * 20)
     end = int(x_max * 20)
 
@@ -74,7 +75,7 @@ def draw_graph(
     x_domain,
     y_domain,
     graph_key,
-    height=560,
+    height=520,
     show_vertex=False
 ):
     rows = make_graph_rows(
@@ -105,7 +106,7 @@ def draw_graph(
                     "axis": {
                         "title": "x",
                         "grid": True,
-                        "tickCount": 9
+                        "tickCount": 11
                     }
                 },
                 "y": {
@@ -117,7 +118,8 @@ def draw_graph(
                     },
                     "axis": {
                         "title": "y",
-                        "grid": True
+                        "grid": True,
+                        "tickCount": 10
                     }
                 },
                 "color": {
@@ -290,18 +292,21 @@ q1 = st.slider(
 if q1 == 0:
     compare_values_1 = [(1, 0)]
 else:
-    compare_values_1 = [(1, 0), (1, q1)]
+    compare_values_1 = [
+        (1, 0),
+        (1, q1)
+    ]
 
 draw_graph(
     functions=compare_values_1,
-    x_domain=[-4, 4],
-    y_domain=[-7, 16],
+    x_domain=[-7, 7],
+    y_domain=[-15, 30],
     graph_key="explore1",
-    height=600
+    height=520
 )
 
 st.info(
-    "💭 두 그래프를 비교하여 발견한 내용을 자유롭게 찾아보세요."
+    "💭 두 그래프를 비교하여 발견한 내용을 찾아보세요."
 )
 
 
@@ -325,14 +330,14 @@ draw_graph(
         (1, 2),
         (1, 4)
     ],
-    x_domain=[-4, 4],
-    y_domain=[-7, 16],
+    x_domain=[-7, 7],
+    y_domain=[-15, 30],
     graph_key="explore2",
-    height=600
+    height=520
 )
 
 st.info(
-    "💭 여러 그래프를 비교하여 공통점과 차이점을 찾아보세요."
+    "💭 여러 그래프를 비교하여 발견한 내용을 찾아보세요."
 )
 
 
@@ -387,14 +392,15 @@ else:
 
     draw_graph(
         functions=compare_values_3,
-        x_domain=[-4, 4],
-        y_domain=[-22, 22],
+        x_domain=[-7, 7],
+        y_domain=[-40, 40],
         graph_key="explore3",
-        height=590
+        height=520
     )
 
     st.info(
-        "💭 a의 값이 달라져도 q가 그래프에 미치는 영향은 같은지 관찰해 보세요."
+        "💭 a의 값이 달라져도 두 그래프 사이에서 "
+        "비슷한 관계를 발견할 수 있는지 관찰해 보세요."
     )
 
 
@@ -403,10 +409,10 @@ else:
 # ==================================================
 
 st.divider()
-st.header("탐구 4. q와 그래프의 특별한 점")
+st.header("탐구 4. q의 값과 그래프의 위치")
 
 st.write(
-    "q의 값을 바꾸면서 그래프에서 가장 특징적인 점이 "
+    "q의 값을 바꾸면서 그래프 전체가 "
     "어떻게 움직이는지 관찰해 보세요."
 )
 
@@ -421,15 +427,15 @@ q4 = st.slider(
 
 draw_graph(
     functions=[(1, q4)],
-    x_domain=[-5, 5],
-    y_domain=[-8, 18],
+    x_domain=[-7, 7],
+    y_domain=[-15, 30],
     graph_key="explore4",
-    height=590,
-    show_vertex=True
+    height=520,
+    show_vertex=False
 )
 
 st.info(
-    "💭 검은 점의 위치와 q의 값 사이에서 어떤 관계를 발견할 수 있나요?"
+    "💭 그래프에서 특별해 보이는 점의 위치에도 주목해 보세요."
 )
 
 
