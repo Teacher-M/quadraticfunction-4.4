@@ -25,17 +25,22 @@ st.info(
 # --------------------------------------------------
 
 def function_name(a, q):
+
     if a == 1:
         base = "x²"
+
     elif a == -1:
         base = "-x²"
+
     else:
         base = f"{a}x²"
 
     if q == 0:
         return f"y = {base}"
+
     elif q > 0:
         return f"y = {base} + {q}"
+
     else:
         return f"y = {base} - {abs(q)}"
 
@@ -45,16 +50,19 @@ def function_name(a, q):
 # --------------------------------------------------
 
 def make_graph_rows(functions, x_min, x_max):
+
     rows = []
 
-    # 0.05 간격으로 값을 만들어 부드러운 곡선 표시
+    # 0.05 간격으로 부드러운 곡선 만들기
     start = int(x_min * 20)
     end = int(x_max * 20)
 
     for i in range(start, end + 1):
+
         x = i / 20
 
         for a, q in functions:
+
             rows.append(
                 {
                     "x": x,
@@ -67,7 +75,7 @@ def make_graph_rows(functions, x_min, x_max):
 
 
 # --------------------------------------------------
-# 좌표축이 드러나는 그래프
+# 그래프 그리기
 # --------------------------------------------------
 
 def draw_graph(
@@ -78,6 +86,7 @@ def draw_graph(
     width=720,
     height=430
 ):
+
     rows = make_graph_rows(
         functions=functions,
         x_min=x_domain[0],
@@ -85,6 +94,7 @@ def draw_graph(
     )
 
     chart = {
+
         "width": width,
         "height": height,
 
@@ -104,7 +114,6 @@ def draw_graph(
 
                 "encoding": {
 
-                    # x축
                     "x": {
                         "field": "x",
                         "type": "quantitative",
@@ -117,11 +126,10 @@ def draw_graph(
                         "axis": {
                             "title": "x",
                             "grid": True,
-                            "tickCount": 17
+                            "tickCount": 13
                         }
                     },
 
-                    # y축
                     "y": {
                         "field": "y",
                         "type": "quantitative",
@@ -134,11 +142,10 @@ def draw_graph(
                         "axis": {
                             "title": "y",
                             "grid": True,
-                            "tickCount": 21
+                            "tickCount": 9
                         }
                     },
 
-                    # 함수별 색
                     "color": {
                         "field": "함수",
                         "type": "nominal",
@@ -148,7 +155,6 @@ def draw_graph(
                         }
                     },
 
-                    # 마우스를 올렸을 때 좌표 표시
                     "tooltip": [
 
                         {
@@ -175,10 +181,7 @@ def draw_graph(
             },
 
 
-            # --------------------------------------------------
-            # x축 강조
-            # --------------------------------------------------
-
+            # x축
             {
                 "data": {
                     "values": [{"y": 0}]
@@ -199,10 +202,7 @@ def draw_graph(
             },
 
 
-            # --------------------------------------------------
-            # y축 강조
-            # --------------------------------------------------
-
+            # y축
             {
                 "data": {
                     "values": [{"x": 0}]
@@ -223,11 +223,6 @@ def draw_graph(
             }
         ],
 
-
-        # --------------------------------------------------
-        # 그래프 전체 설정
-        # --------------------------------------------------
-
         "config": {
 
             "view": {
@@ -235,7 +230,7 @@ def draw_graph(
             },
 
             "axis": {
-                "labelFontSize": 11,
+                "labelFontSize": 12,
                 "titleFontSize": 15
             },
 
@@ -253,7 +248,6 @@ def draw_graph(
     )
 
 
-    # 그래프가 웹페이지 전체 너비로 늘어나지 않도록 설정
     st.vega_lite_chart(
         chart,
         use_container_width=False,
@@ -301,8 +295,11 @@ else:
 
 draw_graph(
     functions=compare_values_1,
-    x_domain=[-8, 8],
-    y_domain=[-15, 65],
+
+    # 이전보다 조금 확대
+    x_domain=[-6, 6],
+    y_domain=[-10, 30],
+
     graph_key="explore1"
 )
 
@@ -334,8 +331,10 @@ draw_graph(
         (1, 2),
         (1, 4)
     ],
-    x_domain=[-8, 8],
-    y_domain=[-15, 65],
+
+    x_domain=[-6, 6],
+    y_domain=[-10, 30],
+
     graph_key="explore2"
 )
 
@@ -410,27 +409,29 @@ else:
         ]
 
 
-    # a가 양수일 때
+    # a가 양수인 경우
     if a3 > 0:
 
         y_range_3 = [
-            -20,
-            100
+            -10,
+            45
         ]
 
-    # a가 음수일 때
+    # a가 음수인 경우
     else:
 
         y_range_3 = [
-            -100,
-            20
+            -45,
+            10
         ]
 
 
     draw_graph(
         functions=compare_values_3,
-        x_domain=[-8, 8],
+
+        x_domain=[-6, 6],
         y_domain=y_range_3,
+
         graph_key="explore3"
     )
 
@@ -469,8 +470,10 @@ draw_graph(
     functions=[
         (1, q4)
     ],
-    x_domain=[-8, 8],
-    y_domain=[-15, 65],
+
+    x_domain=[-6, 6],
+    y_domain=[-10, 30],
+
     graph_key="explore4"
 )
 
