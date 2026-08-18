@@ -25,22 +25,17 @@ st.info(
 # --------------------------------------------------
 
 def function_name(a, q):
-
     if a == 1:
         base = "x²"
-
     elif a == -1:
         base = "-x²"
-
     else:
         base = f"{a}x²"
 
     if q == 0:
         return f"y = {base}"
-
     elif q > 0:
         return f"y = {base} + {q}"
-
     else:
         return f"y = {base} - {abs(q)}"
 
@@ -50,19 +45,15 @@ def function_name(a, q):
 # --------------------------------------------------
 
 def make_graph_rows(functions, x_min, x_max):
-
     rows = []
 
-    # 0.05 간격으로 부드러운 곡선 만들기
     start = int(x_min * 20)
     end = int(x_max * 20)
 
     for i in range(start, end + 1):
-
         x = i / 20
 
         for a, q in functions:
-
             rows.append(
                 {
                     "x": x,
@@ -72,6 +63,14 @@ def make_graph_rows(functions, x_min, x_max):
             )
 
     return rows
+
+
+# --------------------------------------------------
+# 정수 눈금 만들기
+# --------------------------------------------------
+
+def integer_ticks(start, end):
+    return list(range(start, end + 1))
 
 
 # --------------------------------------------------
@@ -86,15 +85,23 @@ def draw_graph(
     width=720,
     height=430
 ):
-
     rows = make_graph_rows(
         functions=functions,
         x_min=x_domain[0],
         x_max=x_domain[1]
     )
 
-    chart = {
+    x_ticks = integer_ticks(
+        int(x_domain[0]),
+        int(x_domain[1])
+    )
 
+    y_ticks = integer_ticks(
+        int(y_domain[0]),
+        int(y_domain[1])
+    )
+
+    chart = {
         "width": width,
         "height": height,
 
@@ -126,7 +133,11 @@ def draw_graph(
                         "axis": {
                             "title": "x",
                             "grid": True,
-                            "tickCount": 13
+
+                            # x축 1 단위 눈금
+                            "values": x_ticks,
+
+                            "labelFontSize": 11
                         }
                     },
 
@@ -142,7 +153,11 @@ def draw_graph(
                         "axis": {
                             "title": "y",
                             "grid": True,
-                            "tickCount": 9
+
+                            # y축 1 단위 눈금
+                            "values": y_ticks,
+
+                            "labelFontSize": 11
                         }
                     },
 
@@ -156,7 +171,6 @@ def draw_graph(
                     },
 
                     "tooltip": [
-
                         {
                             "field": "함수",
                             "type": "nominal",
@@ -181,7 +195,7 @@ def draw_graph(
             },
 
 
-            # x축
+            # x축 강조
             {
                 "data": {
                     "values": [{"y": 0}]
@@ -202,7 +216,7 @@ def draw_graph(
             },
 
 
-            # y축
+            # y축 강조
             {
                 "data": {
                     "values": [{"x": 0}]
@@ -230,7 +244,6 @@ def draw_graph(
             },
 
             "axis": {
-                "labelFontSize": 12,
                 "titleFontSize": 15
             },
 
@@ -241,12 +254,10 @@ def draw_graph(
         }
     }
 
-
     value_key = "_".join(
         f"{a}_{q}"
         for a, q in functions
     )
-
 
     st.vega_lite_chart(
         chart,
@@ -268,7 +279,6 @@ st.write(
     "q의 값을 바꾸면서 두 그래프를 비교해 보세요."
 )
 
-
 q1 = st.slider(
     "q의 값",
     min_value=-5,
@@ -278,34 +288,28 @@ q1 = st.slider(
     key="q1"
 )
 
-
 if q1 == 0:
-
     compare_values_1 = [
         (1, 0)
     ]
-
 else:
-
     compare_values_1 = [
         (1, 0),
         (1, q1)
     ]
 
-
 draw_graph(
     functions=compare_values_1,
 
-    # 이전보다 조금 확대
-    x_domain=[-6, 6],
-    y_domain=[-10, 30],
+    # q의 이동량을 눈으로 읽기 좋게 설정
+    x_domain=[-5, 5],
+    y_domain=[-6, 16],
 
     graph_key="explore1"
 )
 
-
 st.info(
-    "💭 두 그래프를 비교하여 발견한 내용을 찾아보세요."
+    "💭 두 그래프 사이에서 어떤 변화가 일어나는지 관찰해 보세요."
 )
 
 
@@ -322,7 +326,6 @@ st.write(
     "한 좌표평면에서 비교해 보세요."
 )
 
-
 draw_graph(
     functions=[
         (1, -4),
@@ -332,15 +335,14 @@ draw_graph(
         (1, 4)
     ],
 
-    x_domain=[-6, 6],
-    y_domain=[-10, 30],
+    x_domain=[-5, 5],
+    y_domain=[-6, 16],
 
     graph_key="explore2"
 )
 
-
 st.info(
-    "💭 여러 그래프를 비교하여 발견한 내용을 찾아보세요."
+    "💭 여러 그래프의 위치를 비교하여 규칙을 찾아보세요."
 )
 
 
@@ -357,12 +359,9 @@ st.write(
     "두 그래프 사이의 관계를 관찰해 보세요."
 )
 
-
 col1, col2 = st.columns(2)
 
-
 with col1:
-
     a3 = st.slider(
         "a의 값",
         min_value=-4,
@@ -372,9 +371,7 @@ with col1:
         key="a3"
     )
 
-
 with col2:
-
     q3 = st.slider(
         "q의 값",
         min_value=-5,
@@ -392,53 +389,34 @@ if a3 == 0:
         "0이 아닌 값을 선택하세요."
     )
 
-
 else:
 
     if q3 == 0:
-
         compare_values_3 = [
             (a3, 0)
         ]
 
     else:
-
         compare_values_3 = [
             (a3, 0),
             (a3, q3)
         ]
 
-
-    # a가 양수인 경우
     if a3 > 0:
+        y_range_3 = [-6, 25]
 
-        y_range_3 = [
-            -10,
-            45
-        ]
-
-    # a가 음수인 경우
     else:
-
-        y_range_3 = [
-            -45,
-            10
-        ]
-
+        y_range_3 = [-25, 6]
 
     draw_graph(
         functions=compare_values_3,
-
-        x_domain=[-6, 6],
+        x_domain=[-5, 5],
         y_domain=y_range_3,
-
         graph_key="explore3"
     )
 
-
     st.info(
-        "💭 a의 값이 달라져도 두 그래프 사이에서 "
-        "비슷한 관계를 발견할 수 있는지 관찰해 보세요."
+        "💭 a가 달라져도 q가 그래프에 미치는 영향이 같은지 살펴보세요."
     )
 
 
@@ -455,31 +433,28 @@ st.write(
     "그래프가 어떻게 움직이는지 관찰해 보세요."
 )
 
-
 q4 = st.slider(
     "q의 값",
-    min_value=-6,
-    max_value=6,
+    min_value=-5,
+    max_value=5,
     value=2,
     step=1,
     key="q4"
 )
-
 
 draw_graph(
     functions=[
         (1, q4)
     ],
 
-    x_domain=[-6, 6],
-    y_domain=[-10, 30],
+    x_domain=[-5, 5],
+    y_domain=[-6, 16],
 
     graph_key="explore4"
 )
 
-
 st.info(
-    "💭 그래프의 위치와 특징적인 점의 변화도 함께 관찰해 보세요."
+    "💭 그래프의 위치와 특징적인 점의 위치를 함께 살펴보세요."
 )
 
 
