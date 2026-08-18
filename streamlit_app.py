@@ -21,7 +21,7 @@ st.info(
 
 
 # --------------------------------------------------
-# 함수 이름 만들기
+# 함수 이름
 # --------------------------------------------------
 
 def function_name(a, q):
@@ -53,7 +53,7 @@ def make_graph_rows(functions, x_min, x_max):
 
     rows = []
 
-    # 0.05 간격으로 값을 만들어 부드러운 곡선 표시
+    # 0.05 간격으로 부드러운 곡선 만들기
     start = int(x_min * 20)
     end = int(x_max * 20)
 
@@ -84,7 +84,7 @@ def draw_graph(
     y_domain,
     graph_key,
     width=720,
-    height=430
+    height=500
 ):
 
     rows = make_graph_rows(
@@ -93,7 +93,7 @@ def draw_graph(
         x_max=x_domain[1]
     )
 
-    # x축의 모든 정수값
+    # x축 정수 눈금
     x_ticks = list(
         range(
             int(x_domain[0]),
@@ -101,7 +101,8 @@ def draw_graph(
         )
     )
 
-    # y축의 모든 정수값
+    # y축 모든 정수 눈금
+    # 예: -6, -5, -4, ... , 14, 15, 16
     y_ticks = list(
         range(
             int(y_domain[0]),
@@ -147,11 +148,13 @@ def draw_graph(
                             "title": "x",
                             "grid": True,
 
-                            # x축 1단위
+                            # x축도 1단위
                             "values": x_ticks,
 
                             "labelFontSize": 11,
-                            "labelOverlap": False
+                            "labelOverlap": False,
+                            "labelFlush": False,
+                            "tickSize": 5
                         }
                     },
 
@@ -169,17 +172,24 @@ def draw_graph(
                             "title": "y",
                             "grid": True,
 
-                            # y축 모든 정수값을 1단위로 표시
+                            # ★ y축을 정확히 1단위씩 표시
                             "values": y_ticks,
 
-                            "labelFontSize": 11,
+                            # ★ 숫자를 자동으로 생략하지 않음
+                            "labelOverlap": False,
 
-                            # 숫자가 겹쳐도 자동으로 생략하지 않음
-                            "labelOverlap": False
+                            # ★ 양 끝 숫자도 생략하지 않음
+                            "labelFlush": False,
+
+                            "labelFontSize": 11,
+                            "tickSize": 5,
+
+                            # 정수 형태로 표시
+                            "format": "d"
                         }
                     },
 
-                    # 함수마다 다른 색
+                    # 함수별 색
                     "color": {
                         "field": "함수",
                         "type": "nominal",
@@ -189,7 +199,7 @@ def draw_graph(
                         }
                     },
 
-                    # 마우스를 올리면 함수와 좌표 표시
+                    # 마우스를 올렸을 때 좌표 표시
                     "tooltip": [
 
                         {
@@ -281,7 +291,9 @@ def draw_graph(
 
             "axis": {
                 "titleFontSize": 15,
-                "gridOpacity": 0.45
+
+                # 1단위 격자선이 너무 진하지 않도록
+                "gridOpacity": 0.35
             },
 
             "legend": {
@@ -298,7 +310,6 @@ def draw_graph(
     )
 
 
-    # 웹페이지 전체 폭까지 늘어나지 않도록 설정
     st.vega_lite_chart(
         chart,
         use_container_width=False,
@@ -347,7 +358,8 @@ else:
 draw_graph(
     functions=compare_values_1,
 
-    # q의 이동량이 잘 보이도록 설정
+    # y축: -6부터 16까지
+    # -6, -5, -4, ... 15, 16을 모두 표시
     x_domain=[-5, 5],
     y_domain=[-6, 16],
 
@@ -460,19 +472,17 @@ else:
         ]
 
 
-    # a가 양수인 경우
     if a3 > 0:
 
         y_range_3 = [
             -6,
-            25
+            22
         ]
 
-    # a가 음수인 경우
     else:
 
         y_range_3 = [
-            -25,
+            -22,
             6
         ]
 
